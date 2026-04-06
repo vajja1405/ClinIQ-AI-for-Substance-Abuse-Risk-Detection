@@ -9,20 +9,20 @@ fig = go.Figure()
 # Define blocks: (label, x, y, width, height, color)
 blocks = [
     # Layer 1: Data Sources
-    ("Kaggle Patient Reviews<br>(52k Unstructured Texts)", 1, 3, 2, 0.8, '#34495e'),
-    ("CDC & CMS Guidelines<br>(ICD-10, DRG Severities)", 1, 1, 2, 0.8, '#34495e'),
+    ("Kaggle Patient Reviews<br>(52k Texts)", 1, 3, 2.2, 0.9, '#000000'),
+    ("CDC & CMS Guidelines<br>(ICD-10, DRG)", 1, 1, 2.2, 0.9, '#000000'),
     
     # Layer 2: Ingestion & VectorDB
-    ("Sentence Transformers<br>(all-MiniLM-L6-v2)", 4, 2, 2, 0.8, '#f39c12'),
-    ("PostgreSQL + pgvector<br>(Knowledge Base)", 6.5, 1, 2, 0.8, '#27ae60'),
-    ("UMAP & HDBSCAN<br>(Behavioral Clustering)", 6.5, 3, 2, 0.8, '#8e44ad'),
+    ("Sentence Transformers<br>(all-MiniLM-L6-v2)", 4, 2, 2.2, 0.9, '#000000'),
+    ("PostgreSQL + pgvector<br>(Knowledge Base)", 6.5, 1, 2.2, 0.9, '#000000'),
+    ("UMAP & HDBSCAN<br>(Semantic Cluster)", 6.5, 3, 2.2, 0.9, '#000000'),
     
     # Layer 3: Inference Pipeline
-    ("Claude 3.5 Sonnet<br>LLM Agent / RAG Orchestrator", 9.5, 2, 2.5, 1.2, '#c0392b'),
+    ("Claude 3.5 Sonnet<br>RAG Orchestrator", 9.5, 2, 2.4, 1.2, '#000000'),
     
     # Layer 4: Clinical Bridge Outputs
-    ("Clinical Notes Gap Detection", 13, 3, 2.5, 0.8, '#2980b9'),
-    ("DRG Revenue Recovery Calculator", 13, 1, 2.5, 0.8, '#16a085'),
+    ("Clinical Notes Gap<br>Detection", 13, 3, 2.6, 0.9, '#000000'),
+    ("DRG Revenue Recovery<br>Calculator", 13, 1, 2.6, 0.9, '#000000'),
 ]
 
 for label, cx, cy, w, h, color in blocks:
