@@ -1,0 +1,36 @@
+icd10_code,description,cc_mcc_status
+F10.10,"Alcohol abuse, uncomplicated",neither
+F10.20,"Alcohol dependence, uncomplicated",CC
+F10.21,"Alcohol dependence, in remission",CC
+F10.230,"Alcohol dependence w withdrawal, uncomplicated",MCC
+F10.231,Alcohol dependence w withdrawal delirium,MCC
+F10.239,"Alcohol dependence w withdrawal, unspecified",MCC
+F10.24,Alcohol dependence w alcohol-induced mood disorder,CC
+F10.26,Alcohol dependence w alcohol-induced persisting amnestic disorder,CC
+F10.27,Alcohol dependence w alcohol-induced persisting dementia,MCC
+F11.10,"Opioid abuse, uncomplicated",neither
+F11.20,"Opioid dependence, uncomplicated",CC
+F11.21,"Opioid dependence, in remission",CC
+F11.220,"Opioid dependence w intoxication, uncomplicated",CC
+F11.23,Opioid dependence w withdrawal,MCC
+F11.24,Opioid dependence w opioid-induced mood disorder,CC
+F13.20,"Sedative dependence, uncomplicated",CC
+F13.230,"Sedative dependence w withdrawal, uncomplicated",MCC
+F13.231,Sedative dependence w withdrawal delirium,MCC
+F14.20,"Cocaine dependence, uncomplicated",CC
+F14.23,Cocaine dependence w withdrawal,CC
+F15.20,"Other stimulant dependence, uncomplicated",CC
+F15.23,Other stimulant dependence w withdrawal,CC
+F12.20,"Cannabis dependence, uncomplicated",CC
+F19.20,"Other psychoactive substance dependence, uncomplicated",CC
+F19.230,"Other psychoactive dependence w withdrawal, uncomplicated",MCC
+Z87.891,Personal history of other specified conditions (SUD),neither
+T40.0X1A,"Poisoning by opium, accidental, initial encounter",CC
+T40.1X1A,"Poisoning by heroin, accidental, initial encounter",MCC
+T40.2X1A,"Poisoning by other opioids, accidental, initial encounter",CC
+T40.3X1A,"Poisoning by methadone, accidental, initial encounter",CC
+T40.4X1A,"Poisoning by other synthetic narcotics, accidental",CC
+T40.601A,"Poisoning by unspecified narcotics, accidental",CC
+T43.011A,"Poisoning by tricyclic antidepressants, accidental",CC
+T43.211A,"Poisoning by unspecified antidepressants, accidental",CC
+T43.601A,"Poisoning by unspecified psychostimulants, accidental",CC

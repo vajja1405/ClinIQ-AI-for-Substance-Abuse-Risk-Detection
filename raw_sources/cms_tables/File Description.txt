@@ -1,0 +1,25 @@
+This file contains the data describing the impact on resource use of specific ICD-10-CM diagnosis code when reported as a secondary diagnosis.		
+		
+Tab Descriptions:		
+"1. The ""FY24_SDXcodes_ImpactonResource"" tab information was generated using discharge claims from the September 2024 update of the FY 2024 MedPAR file.  See column descriptions below.  "		
+		
+"2. The ""Data Review Example"" tab illustrates the application of the of MS-DRG Grouper CC/MCC review methodology using the ""Impact On Resource"" data in the ""SDXcodes_ImpactOnResource"" tabs.  CMS hosted a listening session on October 8, 2019 that included a review of this methodology utilized to mathematically measure the impact on resource use. Refer to https://www.cms.gov/Outreach-and-Education/Outreach/OpenDoorForums/Downloads/10082019ListingSessionTrasncriptandQandAsandAudioFile.zip for the transcript and audio file of the listening session."		
+		
+"3. The ""Flag Criteria"" tab provides a description of the logic used to set the flag [NC, 1+, 2+, 2-, 3-] in Column N of the  ""SDXcodes_ImpactOnResource"" tabs."		
+		
+"""SDXcodes_ImpactOnResource"" Tabs -  Column Descriptions:"		
+COLUMN	TITLE	DESCRIPTION
+Column A	SDX	Secondary Diagnosis Code 
+Column B	SDX Description	Secondary Diagnosis Code Title
+Column C	V41 CC Level	"Severity level (NonCC; CC, or MCC) of the SDX (column A) under Grouper V41"
+Column D	Current (v42) Severity Designation	"Severity level (NonCC; CC, or MCC) of the SDX (column A) under Grouper V42"
+Column E	Total Count	Total count of discharge claims with the SDX (column A) 
+Column F	Counts 1	Count of discharge claims with the SDX (column A) but with no other secondary diagnosis or with all other secondary diagnoses a NonCC
+Column G	Impact 1	"""C1"" impact on resource use of the secondary diagnosis for discharge claims in “Counts 1"" (column F)"
+Column H	Counts 2	Count of discharge claims with the SDX (column A) and with at least one other secondary diagnosis that is a CC but none that is a Major CC
+Column I	Impact 2	"""C2"" impact on resource use of the secondary diagnosis for discharge claims in “Counts 2"" (column H)"
+Column J	Counts 3	Count of discharge claims with the SDX (column A) and with at least one other secondary diagnosis that is a Major CC 
+Column K	Impact 3	"""C3"" impact on resource use of the secondary diagnosis for discharge claims in “Counts 3"" (column J)"
+Column L	% Died	Percentage of discharge claims with the SDX (column A) that were not discharge alive
+Column M	% OR	Percentage of discharge claims with the SDX (column A) that with at least one procedure code with an O.R. designation
+Column N	Flag	"See ""FlagCriteria"" tab for additional information"

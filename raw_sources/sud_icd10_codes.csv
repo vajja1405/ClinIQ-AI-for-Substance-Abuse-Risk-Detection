@@ -1,0 +1,17 @@
+icd10_code,official_description,cc_mcc_status,drg_weight_impact
+F10.10,"Alcohol abuse, uncomplicated",neither,no_upgrade
+F10.20,"Alcohol dependence, uncomplicated",CC,tier_upgrade_minor
+F10.230,"Alcohol dependence with withdrawal, uncomplicated",CC,tier_upgrade_minor
+F11.10,"Opioid abuse, uncomplicated",neither,no_upgrade
+F11.20,"Opioid dependence, uncomplicated",CC,tier_upgrade_minor
+F11.23,Opioid dependence with withdrawal,CC,tier_upgrade_minor
+F12.20,"Cannabis dependence, uncomplicated",CC,tier_upgrade_minor
+F13.20,"Sedative, hypnotic or anxiolytic dependence, uncomplicated",CC,tier_upgrade_minor
+F14.20,"Cocaine dependence, uncomplicated",CC,tier_upgrade_minor
+F15.20,"Other stimulant dependence, uncomplicated",CC,tier_upgrade_minor
+F19.20,"Other psychoactive substance dependence, uncomplicated",CC,tier_upgrade_minor
+Z87.891,Personal history of nicotine dependence,neither,no_upgrade
+T40.1X1A,"Poisoning by heroin, accidental, initial encounter",MCC,tier_upgrade_major
+T40.2X1A,"Poisoning by other opioids, accidental, initial encounter",CC,tier_upgrade_minor
+T40.4X1A,"Poisoning by other synthetic narcotics, accidental",CC,tier_upgrade_minor
+T43.601A,"Poisoning by unspecified psychostimulants, accidental",CC,tier_upgrade_minor

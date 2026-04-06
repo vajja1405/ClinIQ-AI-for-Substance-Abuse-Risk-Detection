@@ -1,0 +1,16 @@
+drg_code,description,weight,gmlos,amlos
+895,Alcohol/Drug Abuse or Dependence w Rehabilitation Therapy,1.152,5.8,7.0
+896,Alcohol/Drug Abuse or Dependence w/o Rehabilitation Therapy w MCC,1.5651,5.3,6.5
+897,Alcohol/Drug Abuse or Dependence w/o Rehabilitation Therapy w/o MCC,0.7112,3.2,3.9
+917,Poisoning & Toxic Effects of Drugs w MCC,1.837,4.4,5.4
+918,Poisoning & Toxic Effects of Drugs w/o MCC,0.8912,2.8,3.3
+870,Septicemia or Severe Sepsis w MV >96 Hours,5.6147,12.3,14.2
+871,Septicemia or Severe Sepsis w/o MV >96 Hours w MCC,2.0047,6.1,7.3
+872,Septicemia or Severe Sepsis w/o MV >96 Hours w/o MCC,1.1323,4.4,5.1
+194,Simple Pneumonia & Pleurisy w MCC,1.6623,4.8,5.8
+195,Simple Pneumonia & Pleurisy w CC,1.0203,3.9,4.7
+291,Heart Failure & Shock w MCC,1.8021,5.1,6.1
+292,Heart Failure & Shock w CC,1.1135,4.0,4.8
+682,Renal Failure w MCC,1.5808,4.7,5.7
+638,Diabetes w MCC,1.3462,4.3,5.2
+441,Disorders of Liver Except Malignancy w MCC,2.3178,5.9,7.3

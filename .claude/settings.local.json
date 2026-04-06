@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(pg_isready)",
+      "Bash(brew services:*)",
+      "Bash(brew list:*)",
+      "Read(//Library/PostgreSQL/17/bin/**)",
+      "Bash(/Library/PostgreSQL/17/bin/pg_isready)",
+      "Bash(/Library/PostgreSQL/17/bin/psql -U postgres -c \"CREATE DATABASE cliniq;\")"
+    ]
+  }
+}

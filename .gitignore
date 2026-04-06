@@ -1,0 +1,23 @@
+venv/
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+
+# Large datasets & zip files
+data/drugsComTest_raw_csv.zip
+data/*.csv
+data/*.json
+!data/load_*.py
+
+# Large databases
+*.sqlite
+*.db
+
+# OS files
+.DS_Store
+
+# Output files (optional if they want to push outputs)
+# outputs/*
+*.zip

@@ -1,0 +1,14 @@
+{
+  "source": "NIDA National Drug Use and Health Survey",
+  "retrieval_date": "2026-04-03",
+  "statistics": {
+    "opioid_overdose_deaths_2017": 47600,
+    "source_opioid": "CDC NCHS Data Brief 329",
+    "alcohol_use_disorder_adults_millions_2017": 14.4,
+    "source_alcohol": "SAMHSA 2017 NSDUH",
+    "economic_cost_drug_abuse_billion_annual": 740,
+    "source_economic": "NIDA Economic Costs publication",
+    "sud_treatment_gap_percent": 90,
+    "source_gap": "SAMHSA 2017 NSDUH Table 5.4A"
+  }
+}
