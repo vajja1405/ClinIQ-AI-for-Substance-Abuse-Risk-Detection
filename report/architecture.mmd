@@ -1,0 +1,42 @@
+graph TD
+    %% Styling
+    classDef source fill:#ffffff,stroke:#2980b9,stroke-width:3px,color:#333
+    classDef processing fill:#ffffff,stroke:#27ae60,stroke-width:3px,color:#333
+    classDef model fill:#ffffff,stroke:#c0392b,stroke-width:3px,color:#333
+    classDef output fill:#ffffff,stroke:#8e44ad,stroke-width:3px,color:#333
+
+    %% Layer 1: Sources
+    subgraph Data Sources
+        A["<b>Kaggle Patient Reviews</b><br/>(52,184 Unstructured Texts)"]:::source
+        B["<b>CDC & CMS Guidelines</b><br/>(ICD-10, DRG Severities)"]:::source
+    end
+
+    %% Layer 2: Vectorization & Storage
+    subgraph Ingestion & Knowledge Base
+        C["<b>Sentence Transformers</b><br/>(all-MiniLM-L6-v2)"]:::processing
+        D[("<b>PostgreSQL + pgvector</b><br/>(RAG Knowledge Base)")]:::processing
+        E["<b>UMAP & HDBSCAN</b><br/>(Semantic Clustering)"]:::processing
+    end
+
+    %% Layer 3: Inference Pipeline
+    subgraph AI Orchestration
+        F{"<b>Claude 3.5 Sonnet</b><br/>(LLM RAG Agent)"}:::model
+    end
+
+    %% Layer 4: Outputs
+    subgraph Clinical Outputs
+        G["<b>Clinical Notes Gap Detection</b><br/>(Identify Missed SUD Codes)"]:::output
+        H["<b>Automated Revenue Recovery</b><br/>(DRG Lift Calculator)"]:::output
+        I["<b>Physician Query Letter</b><br/>(Evidence-Backed Draft)"]:::output
+    end
+
+    %% Connections
+    A --> C
+    B --> C
+    C --> D
+    C --> E
+    D -. "Retrieve Patient Signal & ICD-10" .-> F
+    E -. "Identify Cluster Context" .-> F
+    F ==> G
+    G ==> H
+    G ==>  I
