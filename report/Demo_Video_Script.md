@@ -1,53 +1,51 @@
-# ClinIQ - 3-Minute Video Demo Script
-**Total estimated time:** 2 minutes 55 seconds (approx. 385 words)
-**Pacing:** Confident, professional, steady (130 words per minute)
+# ClinIQ - Comprehensive 3-Minute Video Demo Script
+**Total estimated time:** 2 minutes 45 seconds (approx. 360 words)
+**Pacing:** Confident, rapid, and direct. (Point explicitly to the charts as you speak about them).
 
 ---
 
-### [0:00 - 0:30] Introduction & Main Goal
-**[Visual Cue: Start on the "Risk Signal Detection" tab.]**
+### [0:00 - 0:30] Panel 1: 🔍 Social Signal Analyzer
+**[Visual Cue: Start on the 'Social Signal Analyzer' tab.]**
 
-**Speaker:**
-"Welcome to ClinIQ. The opioid crisis is one of the deadliest epidemics of our generation, yet 90% of people with Substance Use Disorder receive zero treatment. 
+"Welcome to ClinIQ. We start on our live Social Signal Analyzer, which bridges public health data with clinical reality. Here, we run a patient review through our RAG engine. 
 
-Worse, when these patients visit hospitals for other acute reasons—like pneumonia—their underlying addiction is rarely documented in the clinical billing codes. This creates a massive dual gap: Hospitals lose millions in Medicare severity reimbursements, and the CDC loses critical public health surveillance data.
+As you can see, the AI instantly queries our PostgreSQL vector database to retrieve historical patient experiences and official CDC ICD-10 definitions. Instead of guessing, it outputs a strict JSON classification, successfully extracting direct and indirect substance use signals. The results drive the **Confidence Gauge Chart**, displaying an 88% precision detection based entirely on real, auditable government data."
 
-ClinIQ closes this gap. By leveraging RAG-powered agentic AI, we trace early-warning distress signals from social text directly into clinical documentation failures."
+### [0:30 - 1:05] Panel 2: 📈 Population Trends 2008–2017
+**[Visual Cue: Click to 'Population Trends'. Scroll smoothly as you name the charts.]**
 
-### [0:30 - 1:00] Innovation 1: Signal Detection
-**[Visual Cue: Stay on 'Risk Signal Detection'. Scroll slowly down the Three-Method comparison charts.]**
+"Moving to Population Trends, we analyze the 10-year opioid crisis arc. The top metrics highlight our peak distress rate hitting 30.5% in 2017. 
 
-**Speaker:**
-"Our pipeline begins by analyzing over 50,000 anonymized patient reviews. Instead of a single model, we evaluate a three-tiered approach. 
+First, our **Dual-Panel Bar Chart** correlates the surging review volume with skyrocketing patient distress. 
+Below that, the **Stacked Area Chart** reveals how the actual composition of the crisis heavily diversified into polysubstance abuse over time. 
+The **Dual-Axis Line Chart** directly correlates dropping patient sentiment with dropping opioid dominance. 
+Finally, our **UMAP Scatter Plot** paired with the **Cluster Bar Chart** leverages unsupervised learning to group these patient experiences natively, instantly isolating distinct behavioral patterns like extreme withdrawal."
 
-Our Rule-Based NLP acts as a fast baseline, while Cosine Embeddings perfectly isolate high-recall screening. But our core innovation is the LLM-RAG agent. We've securely embedded official CMS billing guidelines and real patient experiences into a PostgreSQL vector database. Claude queries this knowledge base at inference, achieving 88% precision by successfully recognizing localized slang for withdrawal that traditional keyword parsers fundamentally misunderstand."
+### [1:05 - 1:35] Panel 3: ⚖️ Method Comparison
+**[Visual Cue: Click to 'Method Comparison'. Scroll down.]**
 
-### [1:00 - 1:40] Innovation 2: Advanced Visual Analytics
-**[Visual Cue: Click to the "Advanced Data Discovery" tab. Hover over the 3D UMAP and interact with the Sunburst chart.]**
+"Under Method Comparison, we validate our architecture against traditional baselines.
+The **Grouped-Bar Chart** compares F1, Precision, and Recall across 3 distinct methodologies. 
+Next, the **Multi-axis Radar Chart** confirms our LLM+RAG model uniquely balances the absolute precision and explainability demanded by clinical settings. 
+The **Confusion Matrix Heatmap** at the bottom underscores why this matters—drastically minimizing false positives to ensure we never overwhelm doctors with false alarms."
 
-**Speaker:**
-"To make these high-dimensional insights actionable for hospital executives, ClinIQ features a suite of Tableau-grade analytics.
+### [1:35 - 2:20] Panel 4: 🏥 Clinical Documentation Bridge
+**[Visual Cue: Click to 'Clinical Documentation Bridge'. Point out the Treemap and the Live Analyzer.]**
 
-Here in our interactive 3D Behavioral Topological Map, we've clustered patient embeddings using UMAP and HDBSCAN, elevating extreme-distress negative sentiment along the Z-axis. Next to it, our Sunburst Matrix visualizes the intricate taxonomy between specific drug prescriptions and severe withdrawal experiences. 
+"On the Clinical Bridge panel, our **Five-Step Flow Diagram** maps how detecting social distress translates into hospital revenue recovery.
+Our metrics summarize a live synthetic audit: the AI found 46 hidden SUD gaps, quantifying almost $8,000 in lost DRG revenue. 
 
-This proves the crisis isn't monolithic—behaviors are diversifying into polysubstance abuse, and our AI maps it dynamically."
+The **Department Bar Chart** visualizes this financial leak across specific hospital sectors, while the **ICD-10 Frequency Chart** isolates the exact codes continually missed by doctors. 
+At the bottom, our **Live Analyzer** catches these omissions automatically, drafting an evidence-backed physician query letter citing CMS guidelines in real-time."
 
-### [1:40 - 2:30] Innovation 3: The Clinical Bridge
-**[Visual Cue: Click to the "Clinical Billing Impact" tab. Show the $7-8k revenue lift and the Treemap.]**
+### [2:20 - 3:00] Panel 5: 🗺️ Advanced Data Discovery
+**[Visual Cue: Click to 'Advanced Data Discovery'. Interact with the 3D UMAP and Sunburst charts.]**
 
-**Speaker:**
-"So, how does this translate to the real world? 
+"Finally, Advanced Data Discovery delivers Tableau-grade insights.
+Our **Sunburst Hierarchy Chart** maps the complex interactions between diagnosed condition, drug type, and patient sentiment. 
+The **Distribution Box Plot** confirms that active withdrawal patients suffer the most severe unmet clinical needs.
+Our **3D UMAP Scatterplot** pushes this further, mathematically elevating extreme-distress patient clusters along the Z-axis for immediate visual identification.
+The **Revenue Treemap** geographically maps lost hospital funds by size and frequency.
+And perfectly capping it off, our **Temporal Intensity Heatmap** tracks the raw narrative evolution of the epidemic year over year. 
 
-We routed 105 synthetic hospital admission claims through our RAG agent. The AI successfully detected 46 uncoded instances of Substance Use Disorder. 
-
-Because we integrated live CMS DRG severity weights into our database, the system automatically quantified this as nearly $8,000 in uncaptured, direct revenue. When extrapolated to an average urban hospital, automating this detection recovers approximately $27.5 Million dollars annually, while simultaneously correcting the CDC's structural undercount."
-
-### [2:30 - 3:00] Live Demonstration & Conclusion
-**[Visual Cue: Click to the "Live RAG Claim Analyzer" tab. Press 'Analyze Claim' and watch it generate the JSON.]**
-
-**Speaker:**
-"We can watch this happen live. Our clinician uploads an unstructured patient note. The agent queries the pgvector database in real-time, infers the missing ICD-10 dependency code, and instantly generates an evidence-backed physician query letter citing the exact CDC guideline constraint.
-
-Zero patient data leaves the system. Zero AI hallucinations. By bridging population-level social signals with hospital revenue recovery, ClinIQ makes ending the opioid crisis financially sustainable. 
-
-Thank you."
+ClinIQ makes solving the opioid crisis financially sustainable. Thank you."
