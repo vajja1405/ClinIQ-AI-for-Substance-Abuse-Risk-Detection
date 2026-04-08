@@ -24,7 +24,7 @@
 - Python 3.9+
 - PostgreSQL 13+ with pgvector extension
 - Anthropic API key
-
+####
 ### Setup
 
 ```bash
