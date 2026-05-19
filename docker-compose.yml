@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: cliniq_db
+    environment:
+      POSTGRES_USER: cliniq
+      POSTGRES_PASSWORD: cliniq
+      POSTGRES_DB: cliniq
+    ports:
+      - "5432:5432"
+    volumes:
+      - cliniq_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cliniq"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: cliniq_app
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://cliniq:cliniq@db:5432/cliniq
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    command: streamlit run streamlit_app/app.py --server.address=0.0.0.0
+
+volumes:
+  cliniq_pgdata:

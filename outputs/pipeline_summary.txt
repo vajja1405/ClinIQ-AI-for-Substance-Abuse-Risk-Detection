@@ -3,7 +3,7 @@ CLINIQ — NSF NRT RESEARCH-A-THON 2026
 Challenge 1: AI for Substance Abuse Risk Detection
 Track A: AI Modeling and Reasoning
 Team: ClinIQ | UMKC
-2026-04-03 00:22
+2026-04-06 09:17
 
 DATA:
 Kaggle reviews loaded:           52,184
@@ -11,12 +11,12 @@ SUD-relevant reviews:            3,316 (6.4%)
 Period covered:                  2008-2017
 
 RAG KNOWLEDGE BASE:
-Total embeddings:                61
-Registered source documents:     5
+Total embeddings:                122
+Registered source documents:     10
 Knowledge base breakdown:
-  drg_weight: 15 chunks from CMS FY2024 IPPS Final Rule Table 5
-  icd10: 16 chunks from ICD-10-CM Official Codes FY2024
-  sud_signal: 30 chunks from Kaggle UCI Drug Review Dataset — Patient Social Signals
+  drg_weight: 30 chunks from CMS FY2024 IPPS Final Rule Table 5
+  icd10: 32 chunks from ICD-10-CM Official Codes FY2024
+  sud_signal: 60 chunks from Kaggle UCI Drug Review Dataset — Patient Social Signals
 
 TASK 1 — RISK SIGNAL DETECTION:
 Rule-based F1:                   run task1
@@ -33,12 +33,12 @@ TASK 3 — EXPLAINABILITY:
 Every output cites RAG source:   YES
 Confidence scores shown:         YES
 Ethical confirmation visible:    YES
-Physician query letters:         0
+Physician query letters:         219
 
 CLINICAL INNOVATION LAYER:
-Synthetic claims analyzed:       0 (all fictional)
-SUD documentation gaps:          0
-Revenue at risk:                 $0.00
+Synthetic claims analyzed:       220 (all fictional)
+SUD documentation gaps:          219
+Revenue at risk:                 $537,340.22
 Revenue calculation source:      CMS FY2024 IPPS Final Rule
 
 ETHICAL COMPLIANCE:
