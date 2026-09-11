@@ -15,13 +15,11 @@
 
 > **4th Place — NSF NRT Research-A-Thon 2026 · UMKC · Challenge 1 Track A: AI Modeling and Reasoning**
 
-ClinIQ is a production-architecture RAG + agentic AI system that:
-1. Detects substance use disorder (SUD) risk signals in 52,184 anonymized patient drug reviews using three independent ML methods
-2. Uncovers behavioral subpopulations and the 2008–2017 opioid crisis trajectory via UMAP + HDBSCAN clustering
-3. Traces social signals into hospital billing gaps — quantifying missed ICD-10 CC/MCC codes and their $27.5M–$60M annual revenue impact
+ClinIQ is a research prototype comparing keyword, embedding, and LLM+RAG methods on public drug-review data, with a separate synthetic-claims workflow. The reported corpus has 52,184 public review rows, not clinical EHR records or verified unique patients. Labels are keyword-derived proxies, not clinician-adjudicated SUD diagnoses. Review trends and mortality trends cannot establish individual linkage or causation.
 
-**Every fact in the knowledge base traces to a real government URL. Zero hardcoded medical knowledge.**
+**September 11 maintenance:** dashboard metrics now derive from saved confusion counts; unvalidated per-claim payment impact is unknown; scenario economics explicitly model eligibility, documentation, payment changes and costs. The original award/project scope is preserved. These repairs do not establish production clinical use or realized revenue.
 
+Knowledge-base URLs provide provenance but do not, by themselves, validate every interpretation or coding recommendation.
 ---
 
 ## Why This Project Stands Out
@@ -29,10 +27,10 @@ ClinIQ is a production-architecture RAG + agentic AI system that:
 | Signal | What ClinIQ demonstrates |
 |--------|--------------------------|
 | **RAG at scale** | pgvector IVFFlat index over 384-dim sentence embeddings; all-MiniLM-L6-v2 + Claude Haiku for multi-step reasoning |
-| **3-method ML comparison** | Rule-based vs embedding cosine vs LLM+RAG — full precision/recall/F1 evaluation with a 600-record stratified hold-out |
+| **3-method ML comparison** | Rule-based vs embedding cosine vs LLM+RAG — precision/recall/F1 against keyword proxies in a 600-record comparison |
 | **Unsupervised discovery** | UMAP dimensionality reduction + HDBSCAN density clustering reveals clinically meaningful patient subpopulations |
 | **Full-stack delivery** | PostgreSQL schema (11 tables), Streamlit dashboard, reproducible Docker setup, CI via GitHub Actions |
-| **Domain impact** | Bridges NLP outputs to hospital revenue cycle — a gap most academic ML projects never attempt |
+| **Domain exploration** | Connects research questions to a separate synthetic documentation-review workflow |
 | **Ethical AI** | Population-level only, anonymized data, full source auditability, human-in-the-loop design |
 
 ---
@@ -40,14 +38,14 @@ ClinIQ is a production-architecture RAG + agentic AI system that:
 ## Architecture
 
 ```
-Patient Reviews (52,184)
+Public Review Rows (52,184)
         │
         ▼
 ┌───────────────────────────────────────────────────┐
 │              Signal Detection Layer                │
 │  ┌──────────────┐  ┌──────────────┐  ┌─────────┐  │
 │  │  Rule-Based  │  │  Embedding   │  │LLM+RAG  │  │
-│  │ F1=0.859     │  │ Recall=1.000 │  │Prec=0.88│  │
+│  │ F1=0.854     │  │ Recall=1.000 │  │Prec=0.94│  │
 │  └──────────────┘  └──────────────┘  └─────────┘  │
 └───────────────────────────────────────────────────┘
         │
@@ -72,13 +70,13 @@ Patient Reviews (52,184)
 
 ## Key Results
 
-### Detection Performance (600-record stratified evaluation set)
+### Detection Performance (600-record balanced proxy-label comparison)
 
 | Method | Precision | Recall | F1 | Best Use Case |
 |--------|-----------|--------|----|---------------|
-| Rule-Based (ICD-10 vocab) | 0.867 | 0.850 | **0.859** | Operational deployment, auditability |
-| Embedding (cosine ≥ 0.32) | 0.504 | **1.000** | 0.670 | Population screening (zero false negatives) |
-| LLM + RAG (Claude Haiku) | **0.883** | 0.327 | 0.477 | Clinical audit (highest precision + reasoning) |
+| Rule-Based (ICD-10 vocab) | 0.861 | 0.847 | **0.854** | Keyword-proxy baseline |
+| Embedding (cosine ≥ 0.32) | 0.504 | **1.000** | 0.670 | 100% proxy recall in this sample; 295 false positives |
+| LLM + RAG (Claude Haiku) | **0.938** | 0.400 | 0.561 | Highest proxy precision in this saved sample |
 
 ### Temporal Findings (2008–2017 opioid crisis arc)
 
@@ -86,11 +84,17 @@ Patient Reviews (52,184)
 - **18× distress escalation**: Patient distress proportion rose from 1.7% (2008) to 30.5% (2017)
 - **Composition shift**: Opioid-specific proportion fell 40%→16% while total distress rose — the crisis diversified beyond opioids
 
-### Clinical / Revenue Impact
+### Financial interpretation
 
-- Missed ICD-10 MCC/CC codes (e.g. F11.23 opioid withdrawal = MCC, F10.230 alcohol withdrawal = MCC) cause DRG tier downgrades
-- **$2,750–$6,000 per missed comorbidity** (CMS FY2024 DRG weights)
-- **$27.5M–$60M annually** at a 10,000-admission hospital
+The earlier $27.5M–$60M range multiplied 10,000 by an assumed $2,750–$6,000. It was a scenario, not measured recoverable or collected revenue. A suggested diagnosis does not automatically change DRG payment. Clinical documentation, coding eligibility, the claim's existing grouping, payer contract, realization and review costs all matter. Hospital payment increases are not automatically payer savings.
+
+The dashboard now separates historical synthetic dollar fields from a transparent hypothetical funnel. Example: 10,000 admissions × 5% candidates × 40% missed × 60% valid × 50% payment-changing × 100% realization × $3,000 = $180,000 gross. Review of 500 candidates at $30 costs $15,000: $165,000 before implementation and other costs. No part is measured project revenue.
+
+`analysis/evidence.py` recomputes P/R/F1 from saved counts. `claim_payment_delta` returns unknown without validated before/after payments. The agent also returns unknown instead of assigning automatic dollars per suggested code. Public reviews and synthetic claims remain separate datasets.
+
+Saved confusion counts: Rule TP=254, FP=41, FN=46, TN=259; embedding TP=300, FP=295, FN=0, TN=5; LLM+RAG TP=120, FP=8, FN=180, TN=292. See `outputs/method_comparison_results.csv`. The 600-case model run was not repeated during maintenance; these metrics were recomputed from its saved counts.
+
+Run `python -m pytest tests/ -q` for offline tests of the shared application baseline, undefined metrics, saved confusion counts, and the financial funnel. Live database/LLM integration and clinical adjudication remain separate validation work.
 
 ---
 
@@ -185,15 +189,15 @@ cliniq/
 ## Database Schema
 
 ```sql
-drug_reviews        -- 52,184 patient reviews with SUD labels + signal category
+drug_reviews        -- 52,184 public reviews with keyword-proxy labels + signal category
 cdc_overdose        -- CDC mortality data by year/state/substance
 rag_embeddings      -- pgvector knowledge base (384-dim, IVFFlat, cosine)
 rag_source_registry -- Audit trail: every source URL + document registered
-dim_diagnosis       -- ICD-10-CM codes with CC/MCC billing status
+dim_diagnosis       -- ICD-10-CM codes; claim-specific CC/MCC eligibility requires verification
 dim_patient         -- Synthetic patient demographics
 dim_provider        -- Hospital department/specialty lookup
 fact_claims         -- Synthetic clinical claims
-ai_risk_findings    -- Detected coding gaps + revenue impact per claim
+ai_risk_findings    -- Synthetic claim suggestions + unvalidated legacy scenario fields
 method_comparison   -- Task 1 precision/recall/F1 by method
 temporal_analysis   -- Task 2 year-level SUD volume + distress metrics
 ```

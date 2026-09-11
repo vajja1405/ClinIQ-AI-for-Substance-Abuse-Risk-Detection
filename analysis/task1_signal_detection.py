@@ -178,17 +178,12 @@ for term in clinical_terms:
     if term not in {kw for kws in KEYWORD_DICT.values() for kw in kws}:
         KEYWORD_DICT['other_sud'].append(term)
 
+# Shared baseline is tested directly, rather than reimplemented in tests.
+sys.path.insert(0, BASE_DIR)
+from analysis.detection import rule_classify as _rule_classify
+
 def rule_classify(text, drug_name):
-    if not text:
-        return 0, []
-    combined = (str(text) + ' ' + str(drug_name or '')).lower()
-    fired = []
-    for category, keywords in KEYWORD_DICT.items():
-        for kw in keywords:
-            if kw in combined:
-                fired.append(category)
-                break
-    return (1 if fired else 0), list(set(fired))
+    return _rule_classify(text, drug_name, KEYWORD_DICT)
 
 t0 = time.time()
 rule_preds, rule_fired = [], []

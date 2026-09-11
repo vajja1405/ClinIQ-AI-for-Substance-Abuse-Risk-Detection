@@ -66,6 +66,7 @@ st.caption(
 
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUTPUTS_DIR = os.path.join(BASE_DIR, 'outputs')
+sys.path.insert(0, BASE_DIR)
 
 PLOTLY_TEMPLATE = "plotly_dark"
 COLOR_SUD  = "#e94560"
@@ -172,7 +173,8 @@ def load_method_comparison():
     path = os.path.join(OUTPUTS_DIR, 'method_comparison_results.csv')
     if not os.path.exists(path):
         return None
-    mc = pd.read_csv(path)
+    from analysis.evidence import load_saved_comparison
+    mc = pd.DataFrame(load_saved_comparison(path))
     rename = {}
     for old, new in [('f1','f1_score'),('precision','precision_score'),('recall','recall_score')]:
         if old in mc.columns and new not in mc.columns:
@@ -673,8 +675,8 @@ elif panel == "📈 Population Trends 2008–2017":
 elif panel == "⚖️  Method Comparison":
     st.header("Detection Approach Comparison")
     st.write(
-        "Three methods tested on the same 600-record stratified evaluation set "
-        "(300 SUD + 300 non-SUD). Each method uses the same knowledge base built "
+        "Three methods compared with keyword proxy labels on 600 selected reviews "
+        "(300 proxy-positive + 300 proxy-negative). This is not clinical diagnosis validation. Sources include "
         "from real government sources."
     )
 
@@ -689,21 +691,21 @@ elif panel == "⚖️  Method Comparison":
             'color':  '#e74c3c',
             'icon':   '📋',
             'speed':  'Fastest (<1s)',
-            'strength': 'Best balanced F1, auditable, deployable at scale',
+            'strength': 'Best F1 on this proxy-label sample',
             'weakness': 'Cannot explain WHY · Misses slang and indirect signals',
         },
         'Embedding': {
             'color':  '#f39c12',
             'icon':   '🔢',
             'speed':  'Fast (~6s)',
-            'strength': 'Perfect recall — catches every case',
+            'strength': '300/300 proxy positives flagged; 295 false positives',
             'weakness': 'Overclassifies (many false positives) · No explanation',
         },
         'LLM + RAG': {
             'color':  '#27ae60',
             'icon':   '🤖',
             'speed':  'Thorough (~25 min)',
-            'strength': 'Best precision (88%) · Explains reasoning · Cites sources',
+            'strength': 'Highest precision in saved proxy-label comparison',
             'weakness': 'Conservative recall · Requires API · Slower for batch',
         },
     }
@@ -779,27 +781,24 @@ elif panel == "⚖️  Method Comparison":
     # ── Radar chart ───────────────────────────────────────────────────────────
     col_radar, col_interp = st.columns([1, 1])
     with col_radar:
-        st.markdown('<div class="section-header">Method Capability Radar</div>',
+        st.markdown('<div class="section-header">Saved Proxy-Metric Radar</div>',
                     unsafe_allow_html=True)
-        categories = ['F1 Score','Precision','Recall','Speed\n(inverse)','Explainability']
+        categories = ['F1 Score','Precision','Recall']
         method_vals = {
             'Rule-Based': [
                 mc[mc['method']=='Rule-Based']['f1_score'].iloc[0] if len(mc[mc['method']=='Rule-Based'])>0 else 0.86,
                 mc[mc['method']=='Rule-Based']['precision_score'].iloc[0] if len(mc[mc['method']=='Rule-Based'])>0 else 0.87,
                 mc[mc['method']=='Rule-Based']['recall_score'].iloc[0] if len(mc[mc['method']=='Rule-Based'])>0 else 0.85,
-                0.99, 0.50,
             ],
             'Embedding': [
                 mc[mc['method']=='Embedding']['f1_score'].iloc[0] if len(mc[mc['method']=='Embedding'])>0 else 0.67,
                 mc[mc['method']=='Embedding']['precision_score'].iloc[0] if len(mc[mc['method']=='Embedding'])>0 else 0.50,
                 mc[mc['method']=='Embedding']['recall_score'].iloc[0] if len(mc[mc['method']=='Embedding'])>0 else 1.0,
-                0.95, 0.30,
             ],
             'LLM + RAG': [
-                mc[mc['method']=='LLM + RAG']['f1_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else 0.48,
-                mc[mc['method']=='LLM + RAG']['precision_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else 0.88,
-                mc[mc['method']=='LLM + RAG']['recall_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else 0.33,
-                0.10, 0.98,
+                mc[mc['method']=='LLM + RAG']['f1_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else float('nan'),
+                mc[mc['method']=='LLM + RAG']['precision_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else float('nan'),
+                mc[mc['method']=='LLM + RAG']['recall_score'].iloc[0] if len(mc[mc['method']=='LLM + RAG'])>0 else float('nan'),
             ],
         }
         color_map = {'Rule-Based':'#e74c3c','Embedding':'#f39c12','LLM + RAG':'#27ae60'}
@@ -828,19 +827,18 @@ elif panel == "⚖️  Method Comparison":
         st.markdown('<div class="section-header">What Each Score Means</div>',
                     unsafe_allow_html=True)
         st.markdown("""
-**Rule-Based (Best F1: 0.86)**
-Best balanced performance. Built from ICD-10 vocabulary extracted directly from the government knowledge base. Fast enough for population-scale screening. Cannot explain why it classified — no evidence citation.
+**Read the confusion counts before the score.**
+The displayed metrics are recomputed from the saved CSV counts. Labels come from
+condition/drug-name keywords, not independent clinician adjudication.
 
-**Embedding (Perfect Recall: 1.0)**
-Never misses a SUD case — but flags 295 false positives out of 600 reviews. Best for initial broad screening where missing a case is worse than over-flagging.
+**Embedding:** flags 595 of 600 reviews in the saved run. Perfect recall on those
+proxy positives does not mean zero missed clinical cases or acceptable review workload.
 
-**LLM + RAG (Best Precision: 88%)**
-When it says SUD_RISK, it is right 88% of the time. It retrieves real patient experiences and ICD-10 definitions before deciding. Explains reasoning. Best for clinical documentation review where false positives trigger expensive physician queries.
+**LLM + RAG:** 120 true proxy positives, 8 false positives and 180 misses in the saved run.
+Precision is 93.75%, recall 40%. These are historical outputs, not a new model run.
 
-**The Right Method Depends on Context:**
-- Population surveillance → Embedding (catch everything)
-- Clinical coding audit → LLM+RAG (high confidence findings)
-- Real-time screening → Rule-Based (speed + balance)
+**Choose by the action:** establish independent labels, expected prevalence,
+review capacity and consequences of errors before selecting a clinical workflow.
         """)
 
     # ── Confusion matrix heatmap ──────────────────────────────────────────────
@@ -866,8 +864,8 @@ When it says SUD_RISK, it is right 88% of the time. It retrieves real patient ex
         fig_conf.update_layout(template=PLOTLY_TEMPLATE, height=360)
         st.plotly_chart(fig_conf, use_container_width=True)
         st.caption(
-            "False Negatives (missed SUD) = public health surveillance gap.  "
-            "False Positives (over-flagged) = unnecessary physician queries.  "
+            "False negatives here mean missed proxy labels.  "
+            "False-positive cost depends on the eventual action and workflow.  "
             "LLM+RAG minimizes false positives at cost of higher false negatives."
         )
 
@@ -881,12 +879,10 @@ elif panel == "🏥 Clinical Documentation Bridge":
 
     st.markdown("""
 <div class="highlight-box">
-<strong>The Core Insight:</strong> The same opioid crisis showing up in patient reviews online
-is <em>invisible</em> in hospital billing — because SUD is systematically undercoded.
-ClinIQ bridges the gap: social signal surveillance → clinical note analysis → ICD-10 gap detection → revenue recovery.
-<br><br>
-Every missed F11.20 (opioid dependence) or F10.230 (alcohol withdrawal) costs the hospital a DRG tier upgrade —
-and removes a patient from CDC overdose surveillance.
+<strong>Research bridge:</strong> Public review signals and synthetic clinical claims
+illustrate a possible documentation-review workflow. They are separate datasets;
+no person is linked across them. A proposed code needs qualified documentation review.
+Additional codes do not automatically change a DRG, payment or surveillance record.
 </div>
 """, unsafe_allow_html=True)
 
@@ -898,9 +894,9 @@ and removes a patient from CDC overdose surveillance.
     steps = [
         ("Patient writes\nonline review", 0.1,  '#e74c3c'),
         ("ClinIQ detects\nSUD signals",   0.28, '#e67e22'),
-        ("Same patient\nadmitted to ER",  0.46, '#f39c12'),
+        ("Separate synthetic\nclaim example",  0.46, '#f39c12'),
         ("SUD missed\nin billing",        0.64, '#9b59b6'),
-        ("AI finds gap\n+ codes it",      0.82, '#27ae60'),
+        ("Candidate for\nqualified review",      0.82, '#27ae60'),
     ]
     for label, x, color in steps:
         fig_flow.add_shape(type="circle",
@@ -913,7 +909,7 @@ and removes a patient from CDC overdose surveillance.
                 x=x+0.11, y=0.5, text="→", showarrow=False,
                 font=dict(size=22, color='#aaa'))
     fig_flow.add_annotation(x=0.5, y=0.05,
-        text="💰 Revenue recovery · 📊 CDC surveillance restored · 🏥 Accurate population health data",
+        text="💰 Research question · Qualified documentation review · Outcomes require validation",
         showarrow=False, font=dict(size=11, color='#aaa'))
     fig_flow.update_layout(
         template=PLOTLY_TEMPLATE, height=200,
@@ -943,10 +939,10 @@ and removes a patient from CDC overdose surveillance.
             m1, m2, m3, m4 = st.columns(4)
             m1.metric("Claims Analyzed",    f"{claims:,}")
             m2.metric("SUD Gaps Found",     f"{gaps:,}", f"{gaps/claims*100:.0f}% gap rate")
-            m3.metric("Revenue at Risk",    f"${lift:,.0f}", "CMS FY2024 DRG weights")
+            m3.metric("Validated payment impact", "Not measured")
             m4.metric("Avg AI Confidence",  f"{avg_conf:.0%}")
             st.caption(
-                "Revenue based on CMS FY2024 IPPS Final Rule DRG weights · "
+                "Legacy synthetic dollar values are illustrative, not validated payments. "
                 "National base rate $5,500/weight unit · "
                 "All patients are synthetic — no real patient data used."
             )
@@ -980,7 +976,7 @@ and removes a patient from CDC overdose surveillance.
                 st.rerun()
 
             # ── Revenue by department bar chart ───────────────────────────────
-            st.markdown('<div class="section-header">Revenue at Risk by Hospital Department</div>',
+            st.markdown('<div class="section-header">Legacy Synthetic Dollar Scenarios by Department</div>',
                         unsafe_allow_html=True)
             with conn.cursor() as cur:
                 cur.execute("""
@@ -1013,8 +1009,8 @@ and removes a patient from CDC overdose surveillance.
                         color_continuous_scale='RdYlGn',
                         text='Revenue_Fmt',
                         hover_data=['Total_Claims', 'Gaps', 'Gap_Rate'],
-                        title="Revenue recovery opportunity by department (all departments shown)",
-                        labels={'Revenue': 'Potential Revenue Recovery ($)',
+                        title="Legacy synthetic scenario by department (not validated payments)",
+                        labels={'Revenue': 'Legacy scenario dollars ($)',
                                 'Confidence': 'AI Confidence',
                                 'Total_Claims': 'Total Claims',
                                 'Gap_Rate': 'Gap Rate'},
@@ -1023,32 +1019,25 @@ and removes a patient from CDC overdose surveillance.
                     fig_dept.update_layout(
                         template=PLOTLY_TEMPLATE,
                         height=max(320, len(dept_df) * 70),
-                        xaxis_title="Revenue Recovery ($)",
+                        xaxis_title="Legacy scenario dollars ($)",
                         coloraxis_showscale=True,
                         yaxis={'categoryorder': 'total ascending'},
                     )
                     st.plotly_chart(fig_dept, use_container_width=True)
 
                 with col_extrapolate:
-                    st.markdown('<div class="section-header">Scale Projection</div>',
-                                unsafe_allow_html=True)
-                    per_claim = lift / gaps if gaps > 0 else 2750
-                    st.markdown(f"""
-**Per-gap revenue lift:** ${per_claim:,.0f}
-
-**Extrapolated to 1,000 claims:**
-${per_claim * 1000:,.0f}
-
-**Extrapolated to 10,000 claims/year:**
-${per_claim * 10000:,.0f}
-
-**National average SUD undercode rate:**
-~15–25% of relevant admissions
-*(SAMHSA 2017 NSDUH)*
-
-**At 10k admissions/yr, 20% gap rate:**
-${per_claim * 2000:,.0f} annual recovery
-                    """)
+                    from analysis.evidence import opportunity_funnel
+                    st.markdown("#### Hypothetical opportunity")
+                    candidates = st.slider("Candidate share (%)", 0, 100, 5) / 100
+                    valid = st.slider("Documentation valid (%)", 0, 100, 60) / 100
+                    paid = st.slider("Payment changes (%)", 0, 100, 50) / 100
+                    scenario = opportunity_funnel(10000, candidates, .4, valid,
+                                                   paid, 1, 3000, 30)
+                    st.metric("Scenario gross", f"${scenario['gross']:,.0f}")
+                    st.metric("After review cost", f"${scenario['net']:,.0f}")
+                    st.caption("Assumptions: 10,000 admissions; 40% of candidates genuinely missed; "
+                               "$3,000 incremental payment; $30 review per candidate; full realization. "
+                               "Implementation costs excluded. Not measured revenue or Clover savings.")
 
             # ── Revenue by diagnosis code ──────────────────────────────────────
             st.markdown('<div class="section-header">Top Missed ICD-10 Codes (Revenue & Frequency)</div>',
@@ -1088,7 +1077,7 @@ ${per_claim * 2000:,.0f} annual recovery
                 st.caption(
                     "F11.23 (Opioid dependence with withdrawal) and F10.230 "
                     "(Alcohol dependence with withdrawal) are MCC codes — "
-                    "each missed code triggers a full DRG tier downgrade."
+                    "classification and payment effect require the applicable grouper and complete case."
                 )
 
     # ── Live claim analyzer ───────────────────────────────────────────────────
@@ -1096,23 +1085,21 @@ ${per_claim * 2000:,.0f} annual recovery
     st.markdown('<div class="section-header">Live Clinical Note Analyzer</div>',
                 unsafe_allow_html=True)
 
-    note_text = st.text_area(
-        "Paste a clinical note:",
-        value=(
-            "Patient admitted for pneumonia. Chest X-ray right lower lobe "
-            "infiltrate. Patient currently prescribed Suboxone 8mg daily for "
-            "past 6 months. History of opioid use disorder. Day 2: withdrawal "
-            "symptoms noted, diaphoresis and tachycardia. Addiction medicine "
-            "consulted."
-        ),
-        height=120,
-    )
+    with conn.cursor() as cur:
+        cur.execute("SELECT claim_id, clinical_note_text FROM fact_claims ORDER BY claim_id LIMIT 1")
+        selected_claim = cur.fetchone()
+    if not selected_claim:
+        st.info("Load a synthetic demonstration claim first.")
+        st.stop()
+    st.text_area("Stored synthetic claim being analyzed", value=selected_claim[1],
+                 height=120, disabled=True)
+    st.caption("This demonstration analyzes the displayed stored claim; no live patient note is submitted.")
 
     if st.button("🔍 Analyze for SUD Coding Gaps", type="primary"):
         with st.spinner("Retrieving from RAG knowledge base + Claude analysis..."):
             sys.path.insert(0, os.path.join(BASE_DIR, 'agent'))
             with conn.cursor() as cur:
-                cur.execute("SELECT claim_id FROM fact_claims LIMIT 1")
+                cur.execute("SELECT claim_id FROM fact_claims WHERE claim_id = %s", (selected_claim[0],))
                 sample = cur.fetchone()
 
             if sample:
@@ -1133,12 +1120,10 @@ ${per_claim * 2000:,.0f} annual recovery
                         )
 
                     col_rev, col_pub = st.columns(2)
-                    col_rev.metric("Revenue Impact",
-                                   f"${result['revenue_lift']:,.2f}",
-                                   help="CMS FY2024 DRG weights, $5,500 base rate")
+                    col_rev.metric("Validated payment impact", "Not measured")
                     col_pub.metric("Public Health Gap",
-                                   "CDC Surveillance Miss",
-                                   help="Missed code removes patient from overdose tracking")
+                                   "Not established",
+                                   help="Surveillance effects need independent evidence")
 
                     with st.expander("📄 Auto-Generated Physician Query Letter"):
                         with conn.cursor() as cur:
@@ -1285,7 +1270,7 @@ elif panel == "🗺️  Advanced Data Discovery":
     st.divider()
 
     # ── Chart 4: Revenue treemap ──────────────────────────────────────────────
-    st.markdown('<div class="section-header">④ Clinical Gap Revenue Map — by Department & Diagnosis</div>',
+    st.markdown('<div class="section-header">④ Legacy Synthetic Dollar Map — Not Validated Payments</div>',
                 unsafe_allow_html=True)
     if conn:
         try:
@@ -1312,7 +1297,7 @@ elif panel == "🗺️  Advanced Data Discovery":
                     values='Lost_Revenue',
                     color='Gaps_Found',
                     color_continuous_scale='OrRd',
-                    title="Revenue at risk — size = $ at risk · color = gap frequency",
+                    title="Legacy scenario dollars — size = assumed dollars · color = candidate frequency",
                     custom_data=['Revenue_Label', 'Gaps_Found'],
                 )
                 fig_tree.update_traces(

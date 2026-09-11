@@ -111,21 +111,13 @@ def format_context(rag):
 # ─────────────────────────────────────────────────────────────────────────────
 
 def calculate_revenue(missed_codes, rag):
-    """Estimate revenue lift from missed SUD codes using retrieved DRG weights."""
-    total = 0.0
-    for item in missed_codes:
-        # A missed CC/MCC drops the MS-DRG to a lower severity tier.
-        # For demonstration, we estimate a baseline $2,750 lift per gap.
-        lift = 2750.00
-        # If we have RAG DRG weights for the patient's condition, 
-        # approximate the step-down penalty as 35% of the related DRG baseline.
-        if rag.get('drg_weights'):
-            meta = rag['drg_weights'][0][4] or {}
-            weight = float(meta.get('weight', 0))
-            if weight > 0:
-                lift = weight * 5500 * 0.35
-        total += lift
-    return round(total, 2)
+    """Unknown without a validated before/after grouper and payment calculation.
+
+    Preserve the legacy field name, but never sum a fixed price per proposed code.
+    NULL means unmeasured, not zero. Use analysis.evidence.opportunity_funnel
+    for explicitly hypothetical population scenarios.
+    """
+    return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -167,9 +159,9 @@ base provided. Do not add medical knowledge beyond \
 what is in the retrieved context. Every finding must \
 cite a specific retrieved source.
 
-Undercoded SUD diagnoses have two consequences:
-1. Hospital receives lower Medicare reimbursement
-2. Patient disappears from CDC overdose surveillance
+Do not infer a diagnosis from medication use alone. Flag uncertain evidence for
+qualified review. A proposed code does not automatically change payment or
+public-health surveillance. Do not invent financial or surveillance effects.
 
 Return only valid JSON.""",
         messages=[{"role": "user", "content": f"""
@@ -208,7 +200,7 @@ Return ONLY:
   "public_health_impact": "how missed code affects CDC surveillance",
   "social_signal_connection": "connection to retrieved social signals",
   "physician_query_letter": "Dear Dr. [Provider], [formal query citing retrieved guideline]",
-  "revenue_basis": "cite retrieved DRG source for financial figure"
+  "revenue_basis": "Unmeasured; no validated before/after payment comparison"
 }}"""}]
     )
 
@@ -275,6 +267,7 @@ Return ONLY:
         'claim_id':     claim_id,
         'missed_codes': result['missed_codes'],
         'revenue_lift': revenue,
+        'revenue_status': 'unmeasured_requires_validated_payment_comparison',
         'explanation':  explanation,
     }
 
@@ -424,9 +417,8 @@ def run_batch(limit=50):
             continue
 
     gaps = sum(1 for r in results if r.get('missed_codes'))
-    lift = sum(r.get('revenue_lift', 0) for r in results)
     print(f"\nBatch complete: {len(results)} claims, "
-          f"{gaps} gaps, ${lift:,.2f} total lift")
+          f"{gaps} candidate gaps; validated payment impact not measured")
     return results
 
 
