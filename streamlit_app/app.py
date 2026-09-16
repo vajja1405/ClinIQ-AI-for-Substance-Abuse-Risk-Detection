@@ -20,7 +20,6 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import psycopg2
 import streamlit as st
-from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
@@ -107,6 +106,10 @@ def get_conn():
 
 @st.cache_resource
 def get_model():
+    # Imported lazily: torch/sentence-transformers are only needed for live
+    # pgvector retrieval. Without a database connection the dashboard never
+    # calls this, so hosted deployments boot without loading them at all.
+    from sentence_transformers import SentenceTransformer
     return SentenceTransformer('all-MiniLM-L6-v2')
 
 
@@ -195,7 +198,7 @@ panel = st.sidebar.radio("Navigate", [
 ])
 
 conn        = get_conn()
-embed_model = get_model()
+embed_model = None  # loaded on demand in the retrieval path
 client      = anthropic.Anthropic()
 
 
@@ -254,7 +257,7 @@ if panel == "🔍 Social Signal Analyzer":
                 st.warning("Database not connected — showing demo retrieval")
                 signals, codes, guides = [], [], []
             else:
-                vec = embed_model.encode(review_text).tolist()
+                vec = get_model().encode(review_text).tolist()
                 with conn.cursor() as cur:
                     cur.execute("""
                         SELECT source_type, source_document, source_url,
