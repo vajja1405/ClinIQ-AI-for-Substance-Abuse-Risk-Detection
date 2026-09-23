@@ -263,3 +263,12 @@ Tests are self-contained — no database or API key needed.
   note    = {NSF NRT Research-A-Thon 2026, UMKC — 4th Place, Challenge 1 Track A},
 }
 ```
+
+
+## Plan reviewer workload before a pilot
+
+The Method Comparison panel now estimates review volume, missed signals, false
+alerts and review hours from the saved confusion counts and explicit prevalence/time
+assumptions. Download the scenario as CSV. Proxy-label agreement does not establish
+clinical accuracy or transfer to a new population. Saved panels no longer require
+constructing an Anthropic client at startup. No new clinical evaluation is claimed.

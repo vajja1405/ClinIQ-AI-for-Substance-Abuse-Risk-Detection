@@ -199,7 +199,7 @@ panel = st.sidebar.radio("Navigate", [
 
 conn        = get_conn()
 embed_model = None  # loaded on demand in the retrieval path
-client      = anthropic.Anthropic()
+from analysis.review_workload import estimate_workload
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -308,7 +308,10 @@ if panel == "🔍 Social Signal Analyzer":
                 f"- {c[3][:150]} [Sim: {c[4]:.2f}]" for c in codes
             ]) or "No ICD-10 codes retrieved"
 
-            response = client.messages.create(
+            if not os.getenv("ANTHROPIC_API_KEY"):
+                st.warning("Live analysis needs an API key. Saved comparisons remain available.")
+                st.stop()
+            response = anthropic.Anthropic().messages.create(
                 model="claude-sonnet-4-20250514",
                 max_tokens=700,
                 system="""You are a public health analyst detecting SUD risk \
@@ -843,6 +846,30 @@ Precision is 93.75%, recall 40%. These are historical outputs, not a new model r
 **Choose by the action:** establish independent labels, expected prevalence,
 review capacity and consequences of errors before selecting a clinical workflow.
         """)
+
+    st.subheader("Plan an analyst review pilot")
+    st.caption("Inputs below are planning assumptions. Sensitivity and false-positive rates "
+               "come from the saved evaluation; transfer to another population is unvalidated. "
+               "A balanced test set does not establish real-world prevalence or precision.")
+    volume = st.number_input("Reviews to screen", min_value=0, value=1000, step=100)
+    prevalence = st.slider("Assumed positive prevalence (%)", 0, 100, 10) / 100
+    minutes = st.number_input("Minutes per human review", min_value=0.0, value=3.0)
+    workload = []
+    for _, row in mc.iterrows():
+        try:
+            estimate = estimate_workload(row['tp'], row['fp'], row['fn'], row['tn'],
+                                         volume, prevalence, minutes)
+            workload.append({'method': row['method'], **estimate})
+        except ValueError as exc:
+            st.warning(f"{row['method']}: {exc}")
+    if workload:
+        workload_df = pd.DataFrame(workload)
+        st.dataframe(workload_df, use_container_width=True)
+        st.download_button("Download pilot workload assumptions", workload_df.to_csv(index=False),
+                           "cliniq_review_workload.csv", "text/csv")
+    st.write("Next step: have an analyst label a representative sample, measure review time "
+             "and false alerts, and compare methods before choosing a review threshold. "
+             "Do not treat flagged reviews as confirmed diagnoses.")
 
     # ── Confusion matrix heatmap ──────────────────────────────────────────────
     st.markdown('<div class="section-header">Confusion Matrix Breakdown</div>',
