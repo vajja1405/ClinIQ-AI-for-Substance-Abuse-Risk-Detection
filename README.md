@@ -118,8 +118,8 @@ Run `python -m pytest tests/ -q` for offline tests of the shared application bas
 ### Option A — Docker (Recommended, zero configuration)
 
 ```bash
-git clone https://github.com/rahulchowdary/cliniq.git
-cd cliniq
+git clone https://github.com/vajja1405/ClinIQ-AI-for-Substance-Abuse-Risk-Detection.git
+cd ClinIQ-AI-for-Substance-Abuse-Risk-Detection
 cp .env.template .env          # add your ANTHROPIC_API_KEY
 docker compose up --build      # starts PostgreSQL + pgvector + Streamlit app
 ```
@@ -129,8 +129,8 @@ Open `http://localhost:8501`
 ### Option B — Local
 
 ```bash
-git clone https://github.com/rahulchowdary/cliniq.git
-cd cliniq
+git clone https://github.com/vajja1405/ClinIQ-AI-for-Substance-Abuse-Risk-Detection.git
+cd ClinIQ-AI-for-Substance-Abuse-Risk-Detection
 make setup                     # creates venv + installs deps + copies .env
 # Edit .env: set DATABASE_URL and ANTHROPIC_API_KEY
 make db-docker                 # starts PostgreSQL with pgvector via Docker
@@ -245,7 +245,7 @@ Tests are self-contained — no database or API key needed.
 
 | Name | Role | Email |
 |------|------|-------|
-| Rahul Chowdary Vajja | RAG pipeline, clinical bridge, database, dashboard | rcvtk3@umsystem.edu |
+| Rahul Vajja | RAG pipeline, clinical bridge, database, dashboard | rcvtk3@umsystem.edu |
 | Bhavani Adula | Temporal analysis, behavioral clustering, ethics framework | barh3@umsystem.edu |
 
 **Faculty Advisors:** Dr. Mostafizur Rahman · Dr. Yugyung Lee  
@@ -258,7 +258,7 @@ Tests are self-contained — no database or API key needed.
 ```bibtex
 @misc{cliniq2026,
   title   = {ClinIQ: RAG-Powered AI for Substance Abuse Risk Detection from Social Signals},
-  author  = {Vajja, Rahul Chowdary and Adula, Bhavani},
+  author  = {Vajja, Rahul and Adula, Bhavani},
   year    = {2026},
   note    = {NSF NRT Research-A-Thon 2026, UMKC — 4th Place, Challenge 1 Track A},
 }
