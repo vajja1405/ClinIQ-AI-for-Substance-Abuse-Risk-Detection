@@ -248,7 +248,7 @@ Public Review Rows (52,184)
 │              Signal Detection Layer                │
 │  ┌──────────────┐  ┌──────────────┐  ┌─────────┐  │
 │  │  Rule-Based  │  │  Embedding   │  │LLM+RAG  │  │
-│  │ F1=0.854     │  │ Recall=1.000 │  │Prec=0.94│  │
+│  │ F1=0.854*    │  │ Recall=1.000*│  │Prec=.94*│  │
 │  └──────────────┘  └──────────────┘  └─────────┘  │
 └───────────────────────────────────────────────────┘
         │
@@ -268,6 +268,8 @@ Public Review Rows (52,184)
         ▼
      Streamlit Dashboard (5 panels, live RAG)
 ```
+
+\* Original team benchmark, scored against the proxy labels before the September 29, 2026 correction and not rerun. On the corrected labels, keyword rules score F1 0.794 on review text and a fine-tuned DistilBERT scores 0.914 (see Key Results).
 
 ---
 
